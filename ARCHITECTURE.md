@@ -125,7 +125,7 @@ Register in `DEFAULT_RULES`, add `"priority": 1.0` to scenario weights.
 | Station outage | `"has_charging": false` on stop | None |
 | Driver shift limits | Add rule + config field | Small: one rule file |
 
-The route/station/charger/bus/weight separation is intentional so live interview tasks (“add a station”, “double chargers”) are JSON edits.
+The route/station/charger/bus/weight separation is intentional so future changes (more stations, extra chargers, new operators) are mostly JSON edits.
 
 ---
 
@@ -149,14 +149,3 @@ See the [engine flowchart](#engine-flow) above. In code:
 4. Buses never skip route order (no backtracking).
 5. Plan selection uses projected overlap heuristic; queue order uses weighted scoring at runtime.
 6. Valid plans require ≥ 2 charges for the 540 km route.
-
----
-
-## What is not implemented
-
-- Real-time GPS dispatch
-- Electricity pricing optimization
-- Persistence / database
-- Multiple simultaneous routes in one scenario file (use separate scenario files instead)
-
-These are explicitly out of scope per the assignment brief.

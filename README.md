@@ -1,17 +1,18 @@
 # Bus Charging Scheduler
 
-Take-home assignment: schedule electric bus charging on the **Bengaluru ↔ Kochi** route (540 km, stations A–D, 240 km range, 25 min charge).
+Schedule electric bus charging on the **Bengaluru ↔ Kochi** route (540 km, stations A–D, 240 km range, 25 min charge).
 
 ## Architecture
 
 ![High-Level System Architecture](High-Level%20System%20Architecture.png)
 
-Data (JSON scenarios) feeds the engine (plan + event simulation + weighted scoring), which produces timetables for the Streamlit UI. Full design notes and the engine flowchart are in [ARCHITECTURE.md](ARCHITECTURE.md).
+![Scheduler flowchart](flowchart.png)
+
+JSON scenario files feed the engine (plan selection, event simulation, weighted scoring), which produces timetables for the Streamlit UI. See [ARCHITECTURE.md](ARCHITECTURE.md) for full design notes.
 
 ## Quick start
 
 ```bash
-cd project
 pip install -r requirements.txt
 streamlit run app.py
 ```
@@ -26,7 +27,7 @@ python -m src.cli scenario_5
 
 ## How to change a weight
 
-Edit one scenario file, one object — e.g. `data/scenarios/scenario_4.json`:
+Edit one scenario file — e.g. `data/scenarios/scenario_4.json`:
 
 ```json
 "weights": {
@@ -36,7 +37,7 @@ Edit one scenario file, one object — e.g. `data/scenarios/scenario_4.json`:
 }
 ```
 
-Reload the app. Queue priority at congested stations changes immediately. No code edits.
+Reload the app. No code changes required.
 
 ## How to add a new scoring rule
 
@@ -58,27 +59,26 @@ class MyRule(ScoringRule):
 ## Project layout
 
 ```
-project/
 ├── app.py                      # Streamlit UI
-├── ARCHITECTURE.md             # Design + scalability (required for submission)
-├── flowchart.png               # Engine discrete-event flow
+├── ARCHITECTURE.md
+├── flowchart.png
 ├── High-Level System Architecture.png
 ├── data/
-│   ├── SCENARIO_FORMAT.md      # JSON schema documentation
+│   ├── SCENARIO_FORMAT.md
 │   └── scenarios/              # scenario_1.json … scenario_5.json
-├── scripts/build_scenarios.py  # Regenerate scenario files from spec
+├── scripts/build_scenarios.py
 ├── src/
-│   ├── cli.py                  # Command-line runner
+│   ├── cli.py
 │   ├── loader.py
-│   ├── plans.py                # Valid plan enumeration + selection
-│   ├── scheduler.py            # Event-driven simulation
+│   ├── plans.py
+│   ├── scheduler.py
 │   ├── validation.py
 │   ├── route_utils.py
-│   └── scoring/                # Pluggable weighted rules
+│   └── scoring/
 └── tests/
 ```
 
-## Scenarios (assignment spec)
+## Scenarios
 
 | # | Name | Buses | Notes |
 |---|------|-------|-------|
@@ -88,7 +88,7 @@ project/
 | 4 | Operator-Heavy | 20 | 8 KPN on BK; `operator = 2.0` |
 | 5 | Worst Case | 20 | All buses within 72 min (19:00–20:12) |
 
-Regenerate from script: `python scripts/build_scenarios.py`
+Regenerate: `python scripts/build_scenarios.py`
 
 ## Tests
 
@@ -102,17 +102,3 @@ python -m pytest tests/ -q
 - Endpoints excluded from scheduling; only A–D have chargers.
 - Each bus charges ≥ 2 times; scheduler chooses which stations.
 - Bidirectional traffic shares the same chargers.
-
-## Submission checklist (not deployed yet)
-
-- [ ] Push to public GitHub repo
-- [ ] Deploy on Streamlit Community Cloud (`app.py` as entry point)
-- [ ] Submit Google Form with hosted URL + repo URL + approach notes
-
-See `ARCHITECTURE.md` for framework rationale and interview prep.
-
-## Deploy (Streamlit Community Cloud)
-
-1. Push repo to GitHub (public).
-2. [share.streamlit.io](https://share.streamlit.io) → New app → select repo.
-3. Main file: `app.py`. Python 3.10+.
