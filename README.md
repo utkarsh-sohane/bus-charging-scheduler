@@ -17,7 +17,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-CLI (no UI):
+CLI:
 
 ```bash
 python -m src.cli --list
